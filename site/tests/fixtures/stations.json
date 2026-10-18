@@ -1,0 +1,580 @@
+{
+  "data": {
+    "tags_data": {
+      "qualle_meteorologia": [
+        {
+          "codigo": "DCSC-00023",
+          "name": {
+            "prefix": "DCSC-00023",
+            "general": "SDC-SC Timbó 1",
+            "local": ""
+          },
+          "show": true,
+          "timestamp": "2026-10-15T21:11:22.061+00:00",
+          "position": {
+            "bacia": "SC - Rio Itajaí",
+            "latitude": -26.837547302246094,
+            "longitude": -49.270774841308594,
+            "regiao": "Vale do Itajaí",
+            "altitude": null
+          },
+          "data": {
+            "rio": {
+              "rio_nome": {
+                "value": null
+              },
+              "rio_nivel": {
+                "value": 1.809999942779541,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "rio_nivel_tendencia": {
+                "value": null,
+                "show": {
+                  "value": true
+                }
+              },
+              "rio_area_drenagem": {
+                "value": null
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              }
+            },
+            "chuva": {
+              "acumulado": {
+                "min005": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h001": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h003": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h006": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h012": {
+                  "value": 0.009999999776482582,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h024": {
+                  "value": 0.17000000178813934,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h168": {
+                  "value": 26.670000076293945,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "s015": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "min010": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "min015": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h048": {
+                  "value": 0.30000001192092896,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h072": {
+                  "value": 20.8700008392334,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h096": {
+                  "value": 21.229999542236328,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h120": {
+                  "value": 21.260000228881836,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h144": {
+                  "value": 23.8700008392334,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                }
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              }
+            },
+            "pressaoatmos": null,
+            "senstermica": null,
+            "temperatura": null,
+            "umidade": null,
+            "vento": null,
+            "barramento": null
+          },
+          "type": "Hidro",
+          "filter": {
+            "relacao": {
+              "tem_chuva_acumulada": true,
+              "tem_nivel_do_rio": true,
+              "tem_pressao_atmosferica": false,
+              "tem_sensacao_termica": false,
+              "tem_umidade": false,
+              "tem_vazao_do_rio": false,
+              "tem_vento": false,
+              "tem_barragem": false
+            }
+          }
+        },
+        {
+          "codigo": "DCSC-00034",
+          "name": {
+            "prefix": "DCSC-00034",
+            "general": "SDC-SC Timbó 2",
+            "local": ""
+          },
+          "show": true,
+          "timestamp": "2026-10-15T21:11:32.037+00:00",
+          "position": {
+            "bacia": "SC - Rio Itajaí",
+            "latitude": -26.822938919067383,
+            "longitude": -49.27521896362305,
+            "regiao": "Vale do Itajaí",
+            "altitude": null
+          },
+          "data": {
+            "rio": null,
+            "chuva": {
+              "acumulado": {
+                "min005": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h001": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h003": {
+                  "value": 0.019999999552965164,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h006": {
+                  "value": 0.019999999552965164,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h012": {
+                  "value": 0.019999999552965164,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h024": {
+                  "value": 0.1899999976158142,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h168": {
+                  "value": 35.75,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "s015": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "min010": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "min015": {
+                  "value": 0,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h048": {
+                  "value": 0.23000000417232513,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h072": {
+                  "value": 25.170000076293945,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h096": {
+                  "value": 25.309999465942383,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h120": {
+                  "value": 25.700000762939453,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                },
+                "h144": {
+                  "value": 32.650001525878906,
+                  "show": {
+                    "value": true
+                  },
+                  "format": null,
+                  "unit": null
+                }
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              }
+            },
+            "pressaoatmos": {
+              "atual": {
+                "value": 1009.9000244140625,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "tendencia": {
+                "value": 1009.4500122070312
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              },
+              "historico": {
+                "h001": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": 1009.3499755859375
+                  },
+                  "minima": {
+                    "value": 1008.7999877929688
+                  }
+                },
+                "h168": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  }
+                }
+              }
+            },
+            "senstermica": {
+              "atual": {
+                "value": 27.100000381469727,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "historico": {
+                "h001": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  }
+                },
+                "h168": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  }
+                }
+              },
+              "tendencia": {
+                "value": 1009.4500122070312
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              }
+            },
+            "temperatura": {
+              "atual": {
+                "value": 25,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "historico": {
+                "h001": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  }
+                },
+                "h168": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  }
+                }
+              },
+              "tendencia": {
+                "value": 26.260000228881836
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              }
+            },
+            "umidade": {
+              "atual": {
+                "value": 75.30000305175781,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "tendencia": {
+                "value": -6.170076847076416
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              },
+              "historico": {
+                "h001": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  }
+                },
+                "h168": {
+                  "maxima": {
+                    "value": null
+                  },
+                  "media": {
+                    "value": null
+                  },
+                  "minima": {
+                    "value": null
+                  }
+                }
+              }
+            },
+            "vento": {
+              "direcao": {
+                "value": 144.6999969482422,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "velocidade_maxima": {
+                "value": 19.5,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "velocidade_media": {
+                "value": 9.100000381469727,
+                "show": {
+                  "value": true
+                },
+                "format": null,
+                "unit": null
+              },
+              "homologacao": {
+                "relacao": {
+                  "valido": {
+                    "value": true
+                  }
+                }
+              }
+            },
+            "barramento": null
+          },
+          "type": "Meteo",
+          "filter": {
+            "relacao": {
+              "tem_chuva_acumulada": true,
+              "tem_nivel_do_rio": false,
+              "tem_pressao_atmosferica": true,
+              "tem_sensacao_termica": true,
+              "tem_umidade": true,
+              "tem_vazao_do_rio": false,
+              "tem_vento": true,
+              "tem_barragem": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}

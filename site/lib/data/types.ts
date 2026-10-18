@@ -1,0 +1,11 @@
+export type StationCode = 'DCSC-00023' | 'DCSC-00034';
+export type RainPeriod = '1'|'24'|'48'|'72'|'168';
+export type StationReading = { code: StationCode; name: string; reportedAt: string|null; riverM: number|null; rainMm: Record<RainPeriod,number|null>; temperatureC: number|null; feelsLikeC: number|null; humidityPct: number|null; windKmh: number|null };
+export type RiverPoint = {at:string;metres:number};
+export type ForecastDay = {date:string;code:number|null;minC:number|null;maxC:number|null;rainMm:number|null;rainProbabilityPct:number|null};
+export type CurrentSky = {code:number|null;at:string};
+export type Daylight = {date:string;sunrise:string;sunset:string};
+export type Forecast = {days:ForecastDay[];fetchedAt:string;current:CurrentSky|null;daylight:Daylight[]};
+export type SourceResult<T> = {data:T|null;fetchedAt:string|null;stale:boolean;unavailable:boolean;state?:'waiting'|'ready'|'error';stationCollectedAt?:Partial<Record<StationCode,string>>};
+export type Dashboard = {stations:SourceResult<StationReading[]>;forecast:SourceResult<Forecast>};
+export const STATION_URL = 'https://monitoramento.defesacivil.sc.gov.br/estacao/';

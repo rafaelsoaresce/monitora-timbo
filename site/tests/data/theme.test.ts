@@ -1,0 +1,13 @@
+import {it,expect} from 'vitest';
+import {resolveSkyTheme} from '../../lib/sky-theme';
+const now=new Date('2026-10-15T12:00:00-03:00');
+const sky=(code:number|null,at=now.toISOString())=>({code,at});
+const daylight={date:'2026-10-15',sunrise:'2026-10-15T05:45:00-03:00',sunset:'2026-10-15T18:25:00-03:00'};
+it('clear_day_uses_light_theme',()=>expect(resolveSkyTheme(now,sky(0),daylight)).toBe('sunny'));
+it('overcast_and_fog_have_muted_day_theme',()=>{expect(resolveSkyTheme(now,sky(3),daylight)).toBe('cloudy');expect(resolveSkyTheme(now,sky(45),daylight)).toBe('cloudy')});
+it('rain_and_thunderstorms_have_distinct_themes',()=>{expect(resolveSkyTheme(now,sky(61),daylight)).toBe('rainy');expect(resolveSkyTheme(now,sky(95),daylight)).toBe('stormy')});
+it('night_overrides_sunny_code',()=>{const night=new Date('2026-10-15T20:00:00-03:00');expect(resolveSkyTheme(night,sky(0,night.toISOString()),daylight)).toBe('night')});
+it('uses_sunrise_and_sunset_boundaries',()=>{expect(resolveSkyTheme(new Date(daylight.sunrise),null,daylight)).toBe('day-neutral');expect(resolveSkyTheme(new Date(daylight.sunset),null,daylight)).toBe('night')});
+it('night_rain_does_not_show_sun',()=>{const night=new Date('2026-10-15T20:00:00-03:00');expect(resolveSkyTheme(night,sky(63,night.toISOString()),daylight)).toBe('night-rain')});
+it('missing_stale_future_or_unknown_conditions_do_not_invent_sun',()=>{for(const current of [null,sky(0,'2026-10-14T12:00:00-03:00'),sky(0,'2030-01-01T00:00:00Z'),sky(999)])expect(resolveSkyTheme(now,current,daylight)).toBe('day-neutral')});
+it('fallback_uses_Timbo_time_not_visitor_timezone',()=>{expect(resolveSkyTheme(new Date('2026-10-15T02:00:00Z'),null,null)).toBe('night');expect(resolveSkyTheme(new Date('2026-10-15T15:00:00Z'),null,null)).toBe('day-neutral')});

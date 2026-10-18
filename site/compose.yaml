@@ -1,0 +1,14 @@
+services:
+  monitora:
+    build: .
+    init: true
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5173:3000"
+    environment:
+      MONITORA_DB_PATH: /app/data/monitora.sqlite
+      SITE_URL: ${SITE_URL:-https://monitora-timbo.rafaelsoaresce.chatgpt.site}
+    volumes:
+      - monitora-data:/app/data
+volumes:
+  monitora-data:

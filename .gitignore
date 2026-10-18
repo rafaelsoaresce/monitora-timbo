@@ -1,0 +1,26 @@
+# Local tooling and hosting state
+.superpowers/
+.agents/
+.codex/
+.aws/
+.openai/
+.sites-runtime/
+
+# Private environment files (including example files)
+.env*
+
+# Dependencies, generated output and local databases
+node_modules/
+.next/
+.vinext/
+.wrangler/
+dist/
+coverage/
+/data/
+/site/data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.tsbuildinfo
+*.log
+.DS_Store

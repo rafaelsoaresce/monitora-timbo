@@ -1,0 +1,10 @@
+import {createElement} from 'react';import {renderToStaticMarkup} from 'react-dom/server';import {it,expect} from 'vitest';
+import {SunTimes} from '../components/monitor/sun-times';
+const daylight=[{date:'2026-10-15',sunrise:'2026-10-15T08:45:00.000Z',sunset:'2026-10-15T21:25:00.000Z'},{date:'2026-10-16',sunrise:'2026-10-16T08:44:00.000Z',sunset:'2026-10-16T21:26:00.000Z'}];
+const render=(at:string,data=daylight)=>renderToStaticMarkup(createElement(SunTimes,{daylight:data,now:new Date(at)}));
+it('during_day_shows_only_upcoming_sunset_in_Timbo_time',()=>{const html=render('2026-10-15T15:00:00Z');expect(html).toContain('Pôr do sol');expect(html).not.toContain('Nascer do sol');expect(html).toContain('18:25');expect(html).not.toContain('05:45');expect(html).toContain('Horário de Brasília');});
+it('after_sunset_shows_only_tomorrows_sunrise',()=>{const html=render('2026-10-15T22:00:00Z');expect(html).toContain('Nascer do sol');expect(html).not.toContain('Pôr do sol');expect(html).toContain('05:44');expect(html).toContain('Amanhã');});
+it('uses_local_date_even_after_UTC_midnight',()=>{const html=render('2026-10-16T01:00:00Z');expect(html).toContain('05:44');expect(html).toContain('Amanhã');});
+it('before_dawn_shows_todays_sunrise',()=>{const html=render('2026-10-15T07:00:00Z');expect(html).toContain('05:45');expect(html).toContain('Hoje');expect(html).not.toContain('Pôr do sol');});
+it('changes_event_at_exact_sunrise_and_sunset',()=>{expect(render(daylight[0].sunrise)).toContain('18:25');expect(render(daylight[0].sunset)).toContain('05:44');});
+it('does_not_repeat_past_events_or_invent_missing_data',()=>{const html=render('2026-10-17T15:00:00Z');expect(html).not.toContain('05:44');expect(html).not.toContain('18:26');expect(html).toContain('—');});

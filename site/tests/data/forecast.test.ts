@@ -1,0 +1,11 @@
+import {it,expect} from 'vitest';
+import fixture from '../fixtures/forecast.json';
+import {normalizeForecast,fetchForecast} from '../../lib/data/forecast';
+const now=new Date('2026-10-15T21:00:00Z');
+it('normalizes_seven_days',()=>{const f=normalizeForecast(fixture,now);expect(f.days).toHaveLength(7);expect(f.fetchedAt).toBe(now.toISOString());expect(f.days[0].date).toBe('2026-10-15')});
+it('missing_is_not_zero',()=>{const f=structuredClone(fixture);f.daily.precipitation_sum=[];expect(normalizeForecast(f,now).days[0].rainMm).toBeNull()});
+it('rejects_wrong_units',()=>{const f=structuredClone(fixture);f.daily_units.temperature_2m_max='°F';expect(()=>normalizeForecast(f,now)).toThrow()});
+it('uses_fixed_location_and_timezone',async()=>{let url='';await fetchForecast(now,(async(input)=>{url=String(input);return Response.json(fixture)}) as typeof fetch);expect(url).toContain('latitude=-26.822939');expect(url).toContain('forecast_days=7');expect(new URL(url).searchParams.get('timezone')).toBe('America/Sao_Paulo')});
+it('normalizes_current_sky_and_solar_times_with_provider_offset',()=>{const raw={...fixture,utc_offset_seconds:-10800,current:{time:'2026-10-15T18:00',weather_code:0},daily:{...fixture.daily,sunrise:['2026-10-15T05:45'],sunset:['2026-10-15T18:25']}};const f=normalizeForecast(raw,now);expect(f.current).toEqual({code:0,at:'2026-10-15T21:00:00.000Z'});expect(f.daylight[0].sunset).toBe('2026-10-15T21:25:00.000Z')});
+it('missing_current_conditions_remain_unknown',()=>expect(normalizeForecast(fixture,now).current).toBeNull());
+it('requests_current_code_and_solar_times',async()=>{let url='';await fetchForecast(now,(async(input)=>{url=String(input);return Response.json(fixture)}) as typeof fetch);expect(new URL(url).searchParams.get('current')).toBe('weather_code');expect(new URL(url).searchParams.get('daily')).toContain('sunrise,sunset')});
