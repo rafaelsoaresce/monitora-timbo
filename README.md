@@ -39,6 +39,10 @@ SITE_URL=https://seu-dominio.com.br docker compose up -d --build
 
 Substitua `https://seu-dominio.com.br` pela URL HTTPS pública da instalação, usada nas URLs canônicas e no sitemap. No Docker, a aplicação fica disponível em `127.0.0.1:5173`; configure um proxy reverso com HTTPS para acesso público.
 
+A imagem final contém as dependências de produção, o site compilado e os arquivos necessários ao coletor e ao backup. A imagem-base é fixada por digest no `site/Dockerfile`: atualize-o periodicamente para receber correções de segurança e valide o build novamente.
+
+O Compose verifica `/api/health` a cada 30 segundos, sem consultar o banco ou fontes externas. Essa verificação indica apenas que o servidor HTTP responde, não a atualização dos dados ou a saúde do coletor. Consulte o estado com `docker compose ps`. O estado `unhealthy` não provoca reinício automático; `restart: unless-stopped` atua quando o processo encerra.
+
 A hospedagem precisa manter o servidor Node.js continuamente ativo e oferecer disco persistente. As configurações antigas de Vinext/Cloudflare permanecem como referência, mas não executam SQLite em Workers.
 
 ## Configuração
