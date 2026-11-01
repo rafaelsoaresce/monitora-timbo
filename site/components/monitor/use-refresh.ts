@@ -1,19 +1,40 @@
 'use client';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {scheduleStationRefresh} from '../../lib/data/schedule';
+import {createConnectivity,type ConnectionStatus} from '../../lib/connectivity';
 import type {Dashboard,SourceResult,RiverPoint} from '../../lib/data/types';
+
 export function useRefresh(initialData:Dashboard,initialHistory:SourceResult<RiverPoint[]>,initialNow:string){
- const [data,setData]=useState(initialData),[history,setHistory]=useState(initialHistory),[hours,setHours]=useState<24|72>(24),[now,setNow]=useState(new Date(initialNow)),[refreshing,setRefreshing]=useState(false),[historyBusy,setHistoryBusy]=useState(false),[notice,setNotice]=useState(''),[revision,setRevision]=useState(0);
- const pending=useRef<AbortController|null>(null),historySequence=useRef(0),firstHistory=useRef(true);
- const refresh=useCallback(async()=>{if(pending.current)return;const controller=new AbortController();pending.current=controller;setRefreshing(true);setNotice('Lendo dados salvos…');
-  try{const r=await fetch('/api/dashboard',{signal:controller.signal});if(!r.ok)throw Error();const next:Dashboard=await r.json();setData(next);setNow(new Date());setNotice(next.stations.unavailable||next.stations.stale||next.forecast.unavailable||next.forecast.stale?'Dados salvos consultados. Uma das coletas está atrasada ou indisponível.':'Dados salvos consultados. Novas coletas ocorrem a cada 30 minutos.');setRevision(n=>n+1);}
-  catch{if(!controller.signal.aborted){setData(d=>({stations:{...d.stations,stale:!!d.stations.data,unavailable:!d.stations.data},forecast:{...d.forecast,stale:!!d.forecast.data,unavailable:!d.forecast.data}}));setNotice('Não foi possível ler o repositório. Exibindo os últimos dados disponíveis.');}}
-  finally{if(!controller.signal.aborted)setRefreshing(false);pending.current=null;}
- },[]);
- useEffect(()=>{const clock=setInterval(()=>{if(document.visibilityState==='visible')setNow(new Date());},60000);const stopSchedule=scheduleStationRefresh(()=>{setNow(new Date());if(document.visibilityState==='visible')void refresh();});const visibility=()=>{if(document.visibilityState==='visible'){setNow(new Date());void refresh();}};document.addEventListener('visibilitychange',visibility);return()=>{stopSchedule();clearInterval(clock);document.removeEventListener('visibilitychange',visibility);pending.current?.abort();};},[refresh]);
- useEffect(()=>{if(firstHistory.current){firstHistory.current=false;return;}const controller=new AbortController(),sequence=++historySequence.current;setHistoryBusy(true);
-  void fetch(`/api/history?hours=${hours}`,{signal:controller.signal}).then(r=>{if(!r.ok)throw Error();return r.json() as Promise<SourceResult<RiverPoint[]>>;}).then((result:SourceResult<RiverPoint[]>)=>{if(sequence===historySequence.current&&!controller.signal.aborted)setHistory(result);}).catch(()=>{if(!controller.signal.aborted&&sequence===historySequence.current)setHistory({data:null,fetchedAt:null,stale:false,unavailable:true});}).finally(()=>{if(sequence===historySequence.current&&!controller.signal.aborted)setHistoryBusy(false);});
-  return()=>controller.abort();
- },[hours,revision]);
- return {data,history,hours,setHours,now,refresh,refreshing,historyBusy,notice};
+ const [data,setData]=useState(initialData),[history,setHistory]=useState(initialHistory),[hours,setHours]=useState<24|72>(24),[now,setNow]=useState(new Date(initialNow));
+ const [refreshing,setRefreshing]=useState(false),[notice,setNotice]=useState(''),[connectionStatus,setConnectionStatus]=useState<ConnectionStatus>('ready');
+ const [connectivity]=useState(createConnectivity);
+ const pending=useRef<AbortController|null>(null),period=useRef(hours);
+ const offline=useCallback(()=>{connectivity.markOffline();pending.current?.abort();pending.current=null;setRefreshing(false);setConnectionStatus('offline');},[connectivity]);
+ const refresh=useCallback(async()=>{
+  if(!navigator.onLine){offline();return;}if(pending.current)return;
+  const controller=new AbortController();pending.current=controller;
+  const token=connectivity.beginCheck();setConnectionStatus('checking');setRefreshing(true);setNotice('Lendo dados salvos…');
+  const timeout=setTimeout(()=>controller.abort(),15000);
+  try{
+   const options:RequestInit={signal:controller.signal,cache:'no-store'};
+   const [dr,hr]=await Promise.all([fetch('/api/dashboard',options),fetch(`/api/history?hours=${period.current}`,options)]);
+   if(!dr.ok||!hr.ok)throw Error('Dados indisponíveis');
+   const [next,nextHistory]=await Promise.all([dr.json() as Promise<Dashboard>,hr.json() as Promise<SourceResult<RiverPoint[]>>]);
+   if(controller.signal.aborted){if(pending.current===controller&&connectivity.completeCheck(token,false))setConnectionStatus('unavailable');return;}
+   if(!navigator.onLine){offline();return;}if(!connectivity.completeCheck(token,true))return;
+   setData(next);setHistory(nextHistory);setNow(new Date());setConnectionStatus('ready');
+   setNotice(next.stations.unavailable||next.stations.stale||next.forecast.unavailable||next.forecast.stale?'Dados salvos consultados. Uma das coletas está atrasada ou indisponível.':'Dados salvos consultados. Novas coletas ocorrem a cada 30 minutos.');
+  }catch{if(!navigator.onLine){offline();return;}if(connectivity.completeCheck(token,false)){setConnectionStatus('unavailable');setNotice('');}}
+  finally{clearTimeout(timeout);if(pending.current===controller){pending.current=null;setRefreshing(false);}}
+ },[connectivity,offline]);
+ useEffect(()=>{
+  if(!navigator.onLine)offline();else void refresh();
+  const clock=setInterval(()=>{if(document.visibilityState==='visible')setNow(new Date());},60000);
+  const stopSchedule=scheduleStationRefresh(()=>{if(document.visibilityState==='visible')void refresh();});
+  const visibility=()=>{if(document.visibilityState==='visible')void refresh();};const online=()=>{void refresh();};
+  window.addEventListener('offline',offline);window.addEventListener('online',online);window.addEventListener('pageshow',visibility);document.addEventListener('visibilitychange',visibility);
+  return()=>{stopSchedule();clearInterval(clock);window.removeEventListener('offline',offline);window.removeEventListener('online',online);window.removeEventListener('pageshow',visibility);document.removeEventListener('visibilitychange',visibility);connectivity.markOffline();pending.current?.abort();pending.current=null;};
+ },[connectivity,offline,refresh]);
+ const changeHours=useCallback((next:24|72)=>{period.current=next;setHours(next);connectivity.markOffline();pending.current?.abort();pending.current=null;void refresh();},[connectivity,refresh]);
+ return {data,history,hours,setHours:changeHours,now,refresh,retryConnection:refresh,refreshing,historyBusy:refreshing,notice,connectionStatus};
 }
