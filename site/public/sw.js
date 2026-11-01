@@ -1,5 +1,5 @@
 /* Only the empty offline shell is cached. Live HTML and data stay on the network. */
-const SHELL_CACHE = 'monitora-timbo-shell-v1';
+const SHELL_CACHE = 'monitora-timbo-shell-v2';
 const SHELL_FILES = ['/offline.html', '/pwa/icon-192.png', '/pwa/icon-512.png', '/pwa/apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.addAll(SHELL_FILES)).then(() => self.skipWaiting()));
