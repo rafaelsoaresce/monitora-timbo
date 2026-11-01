@@ -47,10 +47,11 @@ A hospedagem precisa manter o servidor Node.js continuamente ativo e oferecer di
 
 ## Configuração
 
-As variáveis são fornecidas pelo ambiente de execução; nenhum arquivo `.env` ou `.env.example` é distribuído neste repositório.
+As variáveis são fornecidas pelo ambiente de execução; o arquivo local `site/.env` é ignorado pelo Git e não é distribuído neste repositório. O Next.js o lê na execução local; o Docker Compose o lê quando executado dentro de `site/`.
 
 | Variável | Finalidade | Padrão |
 | --- | --- | --- |
+| `GOOGLE_ANALYTICS_ID` | ID de medição GA4, lido em execução. Vazio ou inválido desativa Analytics. | Sem padrão. |
 | `SITE_URL` | URL HTTPS pública para SEO e sitemap. | `https://monitora-timbo.rafaelsoaresce.chatgpt.site`; substitua na sua instalação. |
 | `MONITORA_DB_PATH` | Caminho do arquivo SQLite. Use caminho absoluto para outro disco persistente. | `data/monitora.sqlite` relativo à pasta `site/`; `/app/data/monitora.sqlite` no Docker. |
 | `PORT` | Porta do servidor Node.js. | `5173`; `3000` dentro do contêiner. |
@@ -127,7 +128,7 @@ Código distribuído sob a [licença MIT](site/LICENSE). As fontes de dados poss
 
 ## Métricas de audiência (Google Analytics 4)
 
-A integração usa a propriedade `G-N9X86GVT7V`, carregada automaticamente em produção (`npm run build` e `npm start`), sem banner de aceite. Não exige variáveis adicionais, cadastro do visitante ou alteração do banco/coletor. No ambiente de desenvolvimento e nos testes não envia métricas. O texto em **Sobre os dados → Privacidade** descreve a coleta; a integração técnica não substitui a avaliação dos requisitos de privacidade aplicáveis à instalação.
+A integração lê `GOOGLE_ANALYTICS_ID` do ambiente do servidor em execução e carrega o Analytics automaticamente em produção, sem banner de aceite, quando o valor é válido. Não exige cadastro do visitante ou alteração do banco/coletor. No ambiente de desenvolvimento e nos testes não envia métricas. O texto em **Sobre os dados → Privacidade** descreve a coleta; a integração técnica não substitui a avaliação dos requisitos de privacidade aplicáveis à instalação.
 
 A tag envia uma visualização inicial por carregamento. Ative **Medição otimizada** no fluxo Web do GA4 para métricas automáticas e navegação pelo histórico; a aplicação não envia um segundo `page_view` manual. Sinais do Google e personalização de anúncios estão desativados na configuração da tag.
 
@@ -139,4 +140,23 @@ A tag envia uma visualização inicial por carregamento. Ative **Medição otimi
 
 Esses eventos medem a intenção de interação, não o sucesso da consulta. Atualizações automáticas do painel não geram eventos de clique. Para usar os parâmetros nos relatórios, cadastre dimensões personalizadas de escopo **Evento**, com parâmetros `hours` e `station_code`, em **Administrador → Definições personalizadas**.
 
-Após publicar esta versão, abra o site e confira **Relatórios → Tempo real** no Analytics; altere o período, a estação e clique em Atualizar. No navegador, a aba Rede deve mostrar uma carga de `gtag/js?id=G-N9X86GVT7V` e requisições de coleta. Bloqueadores de conteúdo podem impedir a medição. A criação da propriedade não importa visitas anteriores à instalação.
+Após publicar esta versão, abra o site e confira **Relatórios → Tempo real** no Analytics; altere o período, a estação e clique em Atualizar. No navegador, a aba Rede deve mostrar uma carga de `gtag/js` com o ID configurado em `GOOGLE_ANALYTICS_ID` e requisições de coleta. Bloqueadores de conteúdo podem impedir a medição. A criação da propriedade não importa visitas anteriores à instalação.
+
+### Configurar ou trocar o ID sem rebuild
+
+Na VPS, crie ou edite `site/.env` (arquivo local ignorado pelo Git e excluído da imagem Docker):
+
+```dotenv
+# Substitua pelo ID de medição fornecido pelo seu fluxo Web do GA4.
+GOOGLE_ANALYTICS_ID=
+```
+
+Para Docker, execute dentro de `site/`, depois de salvar o valor:
+
+```sh
+docker compose up -d --force-recreate
+```
+
+O Compose repassa a variável ao contêiner. Esse comando recria o contêiner com a configuração atual sem reconstruir a imagem; mantenha o volume de dados. Para execução sem Docker, reinicie `npm start`. Nenhum novo build é necessário para trocar o ID após instalar esta versão. Remover/esvaziar a variável desativa a coleta nas próximas cargas de página. Abas já abertas usam a configuração anterior até serem recarregadas.
+
+O endpoint público `/api/analytics-config` lê somente essa variável, valida o formato e retorna `measurementId` ou `null`, sem cache. O ID precisa chegar ao navegador e não é um segredo.

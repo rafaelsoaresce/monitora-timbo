@@ -1,4 +1,4 @@
-export const ANALYTICS_ID = 'G-N9X86GVT7V';
+import {validAnalyticsId} from './analytics-config';
 const SCRIPT_ID = 'monitora-google-analytics';
 
 type AnalyticsEvent = {
@@ -19,22 +19,22 @@ function enabled(): boolean {
  return process.env.NODE_ENV === 'production' && typeof window !== 'undefined';
 }
 
-export function initializeAnalytics(): void {
- if (!enabled() || document.getElementById(SCRIPT_ID)) return;
+export function initializeAnalytics(measurementId: unknown): void {
+ if (!enabled() || !validAnalyticsId(measurementId) || document.getElementById(SCRIPT_ID)) return;
  window.dataLayer = window.dataLayer || [];
  // gtag.js consumes the Arguments object used by Google's standard queue snippet.
  // eslint-disable-next-line prefer-rest-params
  window.gtag = function () { window.dataLayer!.push(arguments); };
  window.gtag('js', new Date());
  // The config sends the initial page_view; do not send another manually.
- window.gtag('config', ANALYTICS_ID, {
+ window.gtag('config', measurementId, {
   allow_google_signals: false,
   allow_ad_personalization_signals: false,
  });
  const script = document.createElement('script');
  script.id = SCRIPT_ID;
  script.async = true;
- script.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`;
+ script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
  document.head.appendChild(script);
 }
 

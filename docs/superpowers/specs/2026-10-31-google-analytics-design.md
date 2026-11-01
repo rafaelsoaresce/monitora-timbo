@@ -1,6 +1,6 @@
 # Google Analytics — desenho aprovado e ajuste solicitado
 
-Objetivo: entender audiência e uso do Monitora Timbó com GA4 G-N9X86GVT7V.
+Objetivo: entender audiência e uso do Monitora Timbó com GA4 GOOGLE_ANALYTICS_ID.
 
 Escopo aprovado: métricas básicas e eventos de Atualizar, troca 24/72h e estação de chuva. Somente produção; não modificar o coletor meteorológico.
 

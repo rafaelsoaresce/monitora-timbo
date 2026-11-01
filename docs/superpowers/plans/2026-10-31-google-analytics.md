@@ -8,7 +8,7 @@
 **Spec:** docs/superpowers/specs/2026-10-31-google-analytics-design.md
 
 ## Global Constraints
-- ID G-N9X86GVT7V; somente produção.
+- ID GOOGLE_ANALYTICS_ID; somente produção.
 - Sem banner de aceite, conforme alteração explícita do usuário.
 - Não alterar coleta meteorológica.
 
