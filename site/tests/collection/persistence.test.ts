@@ -12,6 +12,13 @@ const dirs:string[]=[];
 const path=()=>{const d=mkdtempSync(join(tmpdir(),'monitora-'));dirs.push(d);return join(d,'monitor.sqlite');};
 afterEach(()=>{vi.unstubAllGlobals();for(const d of dirs.splice(0))rmSync(d,{recursive:true,force:true});});
 const at=new Date('2026-10-15T21:35:00Z');
+it('persists_hourly_forecast_across_reopen_using_the_existing_collection',async()=>{
+ const file=path();let repo=new MonitorRepository(file);
+ const payload={...weather,hourly_units:{temperature_2m:'°C',precipitation:'mm',precipitation_probability:'%',weather_code:'wmo code'},hourly:{time:['2026-10-15T19:00'],temperature_2m:[22],precipitation:[0],precipitation_probability:[30],weather_code:[3]}};
+ const fetcher=vi.fn(async(input:RequestInfo|URL)=>Response.json(String(input).includes('defesacivil')?raw:payload));
+ await collectScheduledSlot(repo,at,fetcher);repo.close();repo=new MonitorRepository(file,{readonly:true});
+ expect(readSavedDashboard(repo,at).forecast.data?.hours).toEqual([{at:'2026-10-15T22:00:00.000Z',temperatureC:22,rainMm:0,rainProbabilityPct:30,code:3}]);expect(fetcher).toHaveBeenCalledTimes(2);repo.close();
+});
 function provider(stationPayload:unknown=raw){return vi.fn(async(input:RequestInfo|URL)=>String(input).includes('defesacivil')?Response.json(stationPayload):Response.json(weather));}
 it('starts_30_minute_windows_at_05_and_35',()=>{expect(stationCycleStart(new Date('2026-10-15T17:04:59Z')).toISOString()).toBe('2026-10-15T16:35:00.000Z');expect(nextStationRefresh(new Date('2026-10-15T17:05:00Z')).toISOString()).toBe('2026-10-15T17:35:00.000Z');});
 it('persists_readings_forecast_zero_and_history_across_reopen',async()=>{const file=path();let repo=new MonitorRepository(file);await collectScheduledSlot(repo,at,provider());repo.close();repo=new MonitorRepository(file,{readonly:true});const data=readSavedDashboard(repo,at);expect(data.stations.data?.map(s=>s.name)).toEqual(['Rua Indaial','Parque Central']);expect(data.stations.data?.[0].rainMm['1']).toBe(0);expect(data.forecast.data?.days).toHaveLength(7);expect(readSavedHistory(repo,24,at).data?.length).toBe(1);repo.close();});

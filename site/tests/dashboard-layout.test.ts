@@ -7,11 +7,12 @@ import {MonitorDashboard} from '../components/monitor/dashboard';
 
 // Check the rendered reading order as well as the responsive grid: CSS-only
 // reversal would leave keyboard and screen-reader navigation in the old order.
-it('renders_weather_rain_river_in_mobile_reading_order',()=>{
+it('renders_river_before_rain_and_keeps_weather_in_the_landscape',()=>{
  const unavailable={data:null,fetchedAt:null,stale:false,unavailable:true};
  const html=renderToStaticMarkup(createElement(MonitorDashboard,{initialData:{stations:unavailable,forecast:unavailable},initialHistory:unavailable,initialNow:'2026-10-15T15:00:00Z'}));
  const cards=[...html.matchAll(/class="card ([a-z-]+-card)"/g)].map(m=>m[1]);
- expect(cards).toEqual(['weather-card','rain-card','river-card']);
+ expect(cards).toEqual(['river-card','rain-card']);
+ expect(html.indexOf('hero-conditions')).toBeLessThan(html.indexOf('river-card'));
 });
 function areasAt(width:number):string{
  let result='';const css=postcss.parse(readFileSync(new URL('../app/globals.css',import.meta.url),'utf8'));
@@ -24,10 +25,10 @@ function areasAt(width:number):string{
   rule.walkDecls('grid-template-areas',decl=>{result=decl.value.replace(/\s+/g,' ').trim();});
  });return result;
 }
-it('stacks_weather_rain_river_on_360_390_and_520px_screens',()=>{
- for(const width of [360,390,520])expect(areasAt(width)).toBe('"weather" "rain" "river"');
+it('stacks_river_before_rain_on_360_390_and_520px_screens',()=>{
+ for(const width of [360,390,520,521,600,700])expect(areasAt(width)).toBe('"river" "rain"');
 });
-it('places_weather_above_rain_on_left_and_river_on_right_on_desktop',()=>{
- for(const width of [801,1024,1440])expect(areasAt(width)).toBe('"weather river" "rain river"');
+it('places_river_on_the_left_and_rain_on_the_right_on_desktop',()=>{
+ for(const width of [801,1024,1440])expect(areasAt(width)).toBe('"river rain"');
 });
-it('retains_the_tablet_two_card_row',()=>expect(areasAt(768)).toBe('"river river" "rain weather"'));
+it('retains_the_tablet_two_card_row_with_river_first',()=>expect(areasAt(768)).toBe('"river rain"'));
