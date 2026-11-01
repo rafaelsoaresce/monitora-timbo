@@ -69,6 +69,14 @@ As variáveis são fornecidas pelo ambiente de execução; nenhum arquivo `.env`
 
 ## Como o painel acessa os dados
 
+### Instalar no celular e usar sem conexão
+
+No navegador mobile, o botão **Instalar aplicativo** aparece no início do painel. Em navegadores Android compatíveis, ele abre a confirmação nativa quando disponível; caso contrário, apresenta instruções. No iPhone, use **Compartilhar → Adicionar à Tela de Início**, mantendo **Abrir como App** ativado quando essa opção aparecer. O convite pode ser dispensado durante a sessão e não aparece quando o painel é aberto como aplicativo.
+
+A instalação em produção requer **HTTPS**. Após a primeira visita online e a ativação do service worker, a estrutura de uma tela sem conexão fica disponível. Ela não contém medições: mostra **—**, o aviso de falta de conexão e **Tentar novamente**. O cache offline guarda apenas essa estrutura e os ícones, nunca respostas das APIs ou HTML com medições.
+
+Se a conexão cair com o painel aberto, as medições e a previsão são ocultadas. Falhas de consulta também ocultam os valores e mostram uma mensagem de indisponibilidade. Os dados reaparecem somente após carregar novamente o painel e o histórico com sucesso pela rede. Isso não muda os avisos existentes para coletas atrasadas recebidas online.
+
 A página inicial, `/api/dashboard`, `/api/history`, o botão Atualizar e a troca de período do gráfico consultam somente SQLite, em conexões **somente leitura**. Não existe endpoint público para acionar coleta. Mesmo quando o banco está vazio, corrompido ou indisponível, **não há fallback para Defesa Civil/Open-Meteo**.
 
 O botão Atualizar relê os dados já salvos; não antecipa a coleta. Antes da primeira coleta, o painel indica que está aguardando. O histórico passa a existir a partir das primeiras leituras; não são fabricadas 72 horas de dados anteriores.
