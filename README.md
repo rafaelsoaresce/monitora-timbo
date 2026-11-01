@@ -124,3 +124,19 @@ Os testes usam SQLite real em arquivos temporários e provedores falsos: persist
 ## Licença
 
 Código distribuído sob a [licença MIT](site/LICENSE). As fontes de dados possuem seus próprios termos de uso.
+
+## Métricas de audiência (Google Analytics 4)
+
+A integração usa a propriedade `G-N9X86GVT7V`, carregada automaticamente em produção (`npm run build` e `npm start`), sem banner de aceite. Não exige variáveis adicionais, cadastro do visitante ou alteração do banco/coletor. No ambiente de desenvolvimento e nos testes não envia métricas. O texto em **Sobre os dados → Privacidade** descreve a coleta; a integração técnica não substitui a avaliação dos requisitos de privacidade aplicáveis à instalação.
+
+A tag envia uma visualização inicial por carregamento. Ative **Medição otimizada** no fluxo Web do GA4 para métricas automáticas e navegação pelo histórico; a aplicação não envia um segundo `page_view` manual. Sinais do Google e personalização de anúncios estão desativados na configuração da tag.
+
+| Evento | Disparo | Parâmetro |
+| --- | --- | --- |
+| `dashboard_refresh` | Clique no botão Atualizar | — |
+| `history_period_change` | Troca efetiva do histórico | `hours`: 24 ou 72 |
+| `rain_station_change` | Troca efetiva da estação | `station_code`: DCSC-00023 ou DCSC-00034 |
+
+Esses eventos medem a intenção de interação, não o sucesso da consulta. Atualizações automáticas do painel não geram eventos de clique. Para usar os parâmetros nos relatórios, cadastre dimensões personalizadas de escopo **Evento**, com parâmetros `hours` e `station_code`, em **Administrador → Definições personalizadas**.
+
+Após publicar esta versão, abra o site e confira **Relatórios → Tempo real** no Analytics; altere o período, a estação e clique em Atualizar. No navegador, a aba Rede deve mostrar uma carga de `gtag/js?id=G-N9X86GVT7V` e requisições de coleta. Bloqueadores de conteúdo podem impedir a medição. A criação da propriedade não importa visitas anteriores à instalação.
